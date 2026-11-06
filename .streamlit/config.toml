@@ -1,0 +1,15 @@
+# Streamlit theme for the dashboard.
+# Keep these colors the same as THEME in dashboard/app.py (SLT2).
+[theme]
+base = "light"
+primaryColor = "#0F136D"
+backgroundColor = "#f0f1f6"
+secondaryBackgroundColor = "#f0f1f6"
+textColor = "#111111"
+baseRadius = "10px"
+
+[client]
+toolbarMode = "minimal"
+
+[server]
+runOnSave = true
