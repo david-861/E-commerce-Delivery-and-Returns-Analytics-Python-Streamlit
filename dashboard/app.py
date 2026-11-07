@@ -316,7 +316,7 @@ def overview_page():
         fig_courier_lead.update_xaxes(range=[0,5.5])
         lead_gap = courier["avg_lead_time_days"].max() - courier["avg_lead_time_days"].min()
         style_chart(fig_courier_lead, "Average Lead Time by Courier",
-                   f"Fastest to slowest gap: {lead_gap:.2f} days ({lead_gap * 24:.1f} hours)")
+                   f"Fastest to slowest difference: {lead_gap:.2f} days ({lead_gap * 24:.1f} hours)")
         st.plotly_chart(fig_courier_lead, width = "stretch")
     
     with right2:
@@ -415,11 +415,11 @@ def overview_page():
     
     **Metric definitions**
     - **Lead time:** delivered_date minus ship_date, in days. Only Delivered shipments with a delivered_date are used.
-    - **Return rate:** orders with a row in returns.csv divided by all orders. The order_status value "Returned" is not used. Only 6.9% of the 578 "Returned" orders also appear in returns.csv.
-    - **Return rate by category:** a return is linked to an order, not a product. An order with items from two categories counts once in each category.
+    - **Return rate:** orders with a row in returns.csv divided by all orders. The order_status value "Returned" is not used. The two sources disagree: only 40 of the 578 "Returned" orders have a row in returns.csv.
+    - **Return rate by category:** a return is linked to an order. It is not linked to a product. An order with items from two categories counts once in each category.
     - **Delivery-related reasons:** Late delivery and Damaged item.
     
-    **Limitations:** The no-difference findings are possibly because the dataset is synthetic.
+    **Limitations:** The no-difference findings may be a sign that the dataset is synthetic. The results describe this dataset only.
     
     **Theme:** Color theme inspired by Lazada.
             """
@@ -453,7 +453,7 @@ def run_tests(_fact, _returns):
     ss_total = ((delivered["lead_time_days"] - grand) ** 2).sum()
     for col, question, answer in [
         ("courier", "Is any courier faster?", "No. Every courier averages about 4 days."),
-        ("shipping_method", "Is Express faster than Standard?", "No. The gap is under 1 hour."),
+        ("shipping_method", "Is Express faster than Standard?", "No. The 50-minute difference is not significant."),
     ]:
         g = groups(col)
         f, p = stats.f_oneway(*g)
@@ -467,12 +467,12 @@ def run_tests(_fact, _returns):
         rows.append((name, question, f"\u03c7\u00b2 = {c2:.2f}, p = {p:.3f}", f"Cram\u00e9r's V = {v:.3f}", answer))
 
     chi(pd.crosstab(fact["courier"], fact["shipment_status"]), "Chi-square (status x courier)",
-       "Do lost or returned-to-sender rates differ by courier?", "No. The status mix is the same.")
+       "Do lost or returned-to-sender rates differ by courier?", "No. Every courier has about the same lost and returned-to-sender rates.")
     chi(pd.crosstab(fact["courier"], fact["has_return"]), "Chi-square (returned x courier)",
-       "Do return rates differ by courier?", "Yes, but the gap is very weak.")
+       "Do return rates differ by courier?", "Yes, but the difference is very weak.")
     return_courier = returns["order_id"].map(fact.set_index("order_id")["courier"])
     chi(pd.crosstab(return_courier, returns["reason"]), "Chi-square (reason x courier)",
-       "Do return reasons differ by courier?", "No. Every courier has the same mix.")
+       "Do return reasons differ by courier?", "No. Every courier has the same mix of return reasons.")
     
     lead_by_order = delivered.set_index("order_id")["lead_time_days"]
     return_lead = returns["order_id"].map(lead_by_order)
@@ -480,7 +480,7 @@ def run_tests(_fact, _returns):
     late, other = return_lead[is_late].dropna(), return_lead[~is_late].dropna()
     u, p = stats.mannwhitneyu(late, other, alternative="two-sided")
     rows.append(("Mann-Whitney", "Did 'Late delivery' returns come from slower deliveries?", f"p = {p:.2f}",
-                f"Median {late.median():.0f} vs {other.median():.0f} days", "No. Both took a median of 4 days."))
+                f"Median {late.median():.0f} vs {other.median():.0f} days", "No. 'Late delivery' returns and other returns both took a median of 4 days."))
 
     summary = pd.DataFrame(rows, columns=["Test", "Business question", "Result", "Effect size", "Answer"])
     late_vs_other = pd.DataFrame({"lead_time_days": pd.concat([late, other]),
@@ -502,7 +502,7 @@ def stats_page():
 
     with st.container(key="card_header"):
         st.title("Statistical Analysis")
-        st.caption("Are the gaps between couriers and shipping methods real, or just noise? | "
+        st.caption("Are the differences between couriers and shipping methods real, or just noise? | "
                   f"All {len(fact):,} shipments, no filters")
 
     significant = (summary["Result"].str.extract(r"p = ([0-9.]+)")[0].astype(float) < 0.05).sum()

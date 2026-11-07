@@ -2,11 +2,11 @@
 
 An end-to-end Python analytics project that answers one business question for a retail e-commerce store: **"How well are we delivering, and what causes returns?"** It covers data profiling and cleaning with a full cleaning log, a shipment-level fact table, delivery and returns metrics, five exported charts, seven statistical tests, and a two-page Streamlit dashboard.
 
-<!-- GIF: add the dashboard walkthrough GIF here after submission -->
-
-![Executive Overview page of the Streamlit dashboard](images/00_dashboard_executive_overview.png)
+![Walkthrough of the two-page Streamlit dashboard](images/00_dashboard_walkthrough.gif)
 
 **By:** David Alilio
+
+**Live dashboard:** [Open the Streamlit app](https://delivery-and-returns-analytics.streamlit.app/)
 
 ## Table of Contents
 
@@ -65,10 +65,11 @@ Lead time was measured by its average and its spread. The spread shows how far d
 |-|-|
 | Executive summary | [`reports/executive_summary.txt`](reports/executive_summary.txt) |
 | One-page insights summary | [`reports/one_page_insights_summary.pdf`](reports/one_page_insights_summary.pdf) |
+| Project documentation | [`reports/E-Commerce_Delivery_and_Returns_Analytics_Project_Documentation.pdf`](reports/E-Commerce_Delivery_and_Returns_Analytics_Project_Documentation.pdf) |
 | Notebook | [`notebooks/python_da_capstone_project_option_b.ipynb`](notebooks/python_da_capstone_project_option_b.ipynb) |
 | Cleaned data and cleaning log | [`data/cleaned/`](data/cleaned/) (for example, `customers_clean.csv` and `products_clean.csv`) |
 | Exported charts (PNG) | [`images/01_lead_time_distribution.png`](images/01_lead_time_distribution.png) to [`images/05_shipment_status_breakdown.png`](images/05_shipment_status_breakdown.png) |
-| Dashboard | [`dashboard/app.py`](dashboard/app.py) and the screenshots in [`images/`](images/) |
+| Dashboard | [`dashboard/app.py`](dashboard/app.py), the screenshots in [`images/`](images/), and the [live app](https://delivery-and-returns-analytics.streamlit.app/) |
 
 ## Dataset
 
@@ -397,10 +398,10 @@ Always start the dashboard from the repository root. Streamlit reads the theme i
 ├── data/
 │   ├── raw/                         7 original CSV files
 │   └── cleaned/                     7 cleaned CSV files and cleaning_log.csv
-├── images/                          Dashboard screenshots and the 5 exported charts
+├── images/                          Dashboard screenshots, the walkthrough GIF, and the 5 exported charts
 ├── notebooks/
 │   └── python_da_capstone_project_option_b.ipynb
-├── reports/                         Executive summary and one-page insights summary
+├── reports/                         Executive summary, one-page insights summary, and project documentation
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -433,3 +434,4 @@ Optimization practices applied:
 ## Version History
 
 - **v1 (November 2026):** Submitted as the capstone project for the Python Programming Data Analyst Professional Certificate by DataSense Analytics.
+- **v1.1 (November 2026):** Added the live dashboard, the walkthrough GIF, the one-page insights summary, and the project documentation. Fixed the Sports label in the category chart and aligned the dashboard text with this README.
